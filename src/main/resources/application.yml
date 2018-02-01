@@ -1,0 +1,8 @@
+endpoints:
+  shutdown:
+    enabled: true
+
+info:
+  contact:
+    email: support@myreadinglist.com
+    phone: 1-888-555-1971
