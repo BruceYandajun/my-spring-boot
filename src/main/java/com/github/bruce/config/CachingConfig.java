@@ -10,6 +10,13 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * Used local redis cache
+ *
+ * The steps starting redis-server below:
+ * One step : open redis root path '/Users/yandajun/software/develop/redis-4.0.8'
+ * Second step : execute bin file 'src/redis-server'
+ */
 @Configuration
 @EnableCaching
 public class CachingConfig {
