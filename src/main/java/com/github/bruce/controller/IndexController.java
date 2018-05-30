@@ -19,7 +19,7 @@ import java.util.Map;
 public class IndexController {
 
     @RequestMapping("/")
-    public String welcome(){
+    public String welcome() {
         return "Welcome to my-spring-boot !";
     }
 
