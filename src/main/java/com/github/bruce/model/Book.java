@@ -2,12 +2,8 @@ package com.github.bruce.model;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
-public class User implements Serializable {
-
+public class Book {
     private Integer id;
-
     private String name;
 }

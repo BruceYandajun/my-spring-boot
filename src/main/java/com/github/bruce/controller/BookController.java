@@ -8,25 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/book")
+public class BookController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping("/getById")
-    public String getUserById(@RequestParam int userId) {
-        return userService.getUserById(userId).getName();
-    }
-
-    @GetMapping("/updateUser")
-    public String updateUser(@RequestParam int userId) {
-        userService.updateUser(userId);
-        return "success";
-    }
-
-    @GetMapping("/getAllUsers")
-    public Object getAllUsers() {
-        return userService.getAllUsers();
+    public String getBookById(@RequestParam int userId) {
+        return userService.getBookById(userId).getName();
     }
 }
