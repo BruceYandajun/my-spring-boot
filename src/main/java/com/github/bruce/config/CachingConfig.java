@@ -11,12 +11,14 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.JedisPoolConfig;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -69,12 +71,12 @@ public class CachingConfig {
     }
 
     @Bean
-    public CacheManager redisCacheManager(RedisTemplate redisTemplate) {
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        // Number of seconds before expiration. Defaults to unlimited (0)
-        cacheManager.setDefaultExpiration(60);
-        cacheManager.setUsePrefix(true);
-        return cacheManager;
+    public CacheManager redisCacheManager(JedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration cacheConfiguration =
+                RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ZERO)
+                        .disableCachingNullValues();
+        return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(cacheConfiguration).build();
     }
 
     @Bean
@@ -87,10 +89,11 @@ public class CachingConfig {
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig);
-        jedisConnectionFactory.setHostName("localhost");
-        jedisConnectionFactory.setPort(6379);
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName("localhost");
+        configuration.setDatabase(2);
+        configuration.setPort(6379);
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(configuration);
         jedisConnectionFactory.afterPropertiesSet();
         return jedisConnectionFactory;
     }

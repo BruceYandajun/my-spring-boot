@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,16 @@ public class UserService {
         return user;
     }
 
+    @CacheEvict(value = "userInfo", key = "#root.args[0]")
+    public void updateUser(Integer id){
+        System.out.println(id);
+    }
+
+    @Cacheable(value = "allUsers", cacheManager = "autoRefreshCacheManager")
+    public List<User> getAllUsers() {
+        return userRpcService.getAllUsers();
+    }
+
     @Cacheable(value = "bookInfo", key = "#id", cacheManager = "particularCacheManager")
     public Book getBookById(Integer id) {
         log.info("book id : " + id);
@@ -36,14 +47,14 @@ public class UserService {
         return book;
     }
 
-    @CacheEvict(value = "userInfo", key = "#root.args[0]")
-    public void updateUser(Integer id){
-        System.out.println(id);
-    }
-
-    @Cacheable(value = "allUsers", cacheManager = "autoRefreshCacheManager")
-    public List<User> getAllUsers() {
-        return userRpcService.getAllUsers();
+    @Cacheable(value = "storeInfo", key = "#id", cacheManager = "redisCacheManager")
+    public Book getStoreById(Integer id) {
+        log.info("store id : " + id);
+        Book book = new Book();
+        book.setId(id);
+        book.setName("store" + book.getId());
+        book.setExpire(5);
+        return book;
     }
 
 }

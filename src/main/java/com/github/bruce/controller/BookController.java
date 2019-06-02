@@ -18,4 +18,9 @@ public class BookController {
     public String getBookById(@RequestParam int userId) {
         return userService.getBookById(userId).getName();
     }
+
+    @GetMapping("/getStoreById")
+    public String getStoreById(@RequestParam int storeId) {
+        return userService.getStoreById(storeId).getName();
+    }
 }
