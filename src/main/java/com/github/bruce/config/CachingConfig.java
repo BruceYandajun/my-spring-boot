@@ -3,7 +3,9 @@ package com.github.bruce.config;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.bruce.service.rpc.UserRpcService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -13,14 +15,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Used local redis cache
@@ -30,26 +37,28 @@ import java.util.concurrent.TimeUnit;
  * Second step : execute bin file 'src/redis-server'
  */
 @Configuration
+@EnableConfigurationProperties(RedisCacheProperties.class)
 @EnableCaching
-public class CachingConfig {
+public class CachingConfig extends CachingConfigurerSupport {
+
     /**
-     * Default cacheManager, expire after write 5 seconds, no limit of maximum size
+     * Default cacheManager, expire after write 60 seconds, 2000 limit of maximum size
      */
     @Primary
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.SECONDS));
+        cacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(2000).expireAfterWrite(60, TimeUnit.SECONDS));
         return cacheManager;
     }
 
     /**
-     * Particular cacheManager, expire after last access 5 seconds,  10 maximum size
+     * Five-minutes cacheManager, expire after last access 5 seconds, 2000 maximum size
      */
     @Bean
-    public CacheManager particularCacheManager() {
+    public CacheManager fiveSecondsCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(10).expireAfterAccess(5, TimeUnit.SECONDS));
+        cacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(2000).expireAfterWrite(5, TimeUnit.SECONDS));
         return cacheManager;
     }
 
@@ -70,32 +79,26 @@ public class CachingConfig {
         return cacheManager;
     }
 
+    /**
+     * Redis cacheManager, the value will expire after 60 seconds after being written
+     */
     @Bean
-    public CacheManager redisCacheManager(JedisConnectionFactory redisConnectionFactory) {
-        RedisCacheConfiguration cacheConfiguration =
-                RedisCacheConfiguration.defaultCacheConfig()
-                        .entryTtl(Duration.ZERO)
-                        .disableCachingNullValues();
-        return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(cacheConfiguration).build();
+    public CacheManager redisCacheManager(LettuceConnectionFactory redisConnectionFactory, RedisCacheProperties properties) {
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(60));
+        Map<String, RedisCacheConfiguration> particularConfigs = new HashMap<>();
+        for (Entry<String, Long> cacheNameAndTimeout : properties.getExpires().entrySet()) {
+            particularConfigs.put(cacheNameAndTimeout.getKey(), RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(cacheNameAndTimeout.getValue())));
+        }
+        return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(defaultConfig).withInitialCacheConfigurations(particularConfigs).build();
     }
 
     @Bean
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
-    }
-
-    @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("localhost");
-        configuration.setDatabase(2);
-        configuration.setPort(6379);
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(configuration);
-        jedisConnectionFactory.afterPropertiesSet();
-        return jedisConnectionFactory;
+    public RedisTemplate<Serializable, Serializable> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Serializable, Serializable> template = new RedisTemplate();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
     }
 
 }

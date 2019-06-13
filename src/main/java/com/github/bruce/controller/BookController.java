@@ -15,8 +15,8 @@ public class BookController {
     private UserService userService;
 
     @GetMapping("/getById")
-    public String getBookById(@RequestParam int userId) {
-        return userService.getBookById(userId).getName();
+    public String getBookById(@RequestParam int bookId) {
+        return userService.getBookById(bookId).getName();
     }
 
     @GetMapping("/getStoreById")
