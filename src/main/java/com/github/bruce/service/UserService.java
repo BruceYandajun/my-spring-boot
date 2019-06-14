@@ -19,7 +19,7 @@ public class UserService {
     private UserRpcService userRpcService;
 
     @Autowired
-    private StoreService storeService;
+    private IStoreService storeService;
 
     @Cacheable(value = "userInfo", key = "#root.args[0]")
     public User getUserById(Integer id) {
