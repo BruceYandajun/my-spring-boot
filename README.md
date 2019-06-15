@@ -1,3 +1,3 @@
 # my-spring-boot
 
-This is a project demo architected by spring boot.
+This is a project demo constructed by spring boot.

@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 @RequestMapping("/interceptor")
 public class InterceptorController {
 
-    ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(10);
+    private final ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(10);
 
     @GetMapping("/test")
     public String test() {

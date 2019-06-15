@@ -24,7 +24,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "amazon")
 public class FirstController {
 
-    private Logger logger = LoggerFactory.getLogger(FirstController.class);
+    private final Logger logger = LoggerFactory.getLogger(FirstController.class);
 
     private Integer associateId;
 

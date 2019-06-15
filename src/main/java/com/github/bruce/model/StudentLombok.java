@@ -3,9 +3,6 @@ package com.github.bruce.model;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,9 +21,6 @@ public class StudentLombok {
         boolean remove(Object item);
     }
 
-    @Delegate(types=SimpleCollection.class)
-    private final Collection<String> collection = new ArrayList<>();
-
     public void show() {
         log.info("student show : {}", this.toString());
     }
@@ -34,9 +28,6 @@ public class StudentLombok {
     public static void main(String[] args) {
         log.info("this is a lombok log info");
         StudentLombok student = new StudentLombok(22, "Bruce", true);
-        student.add("hhh");
-        student.add("lll");
-        student.remove("hhh");
         System.out.println(student.toString());
         System.out.println(student.hashCode());
     }

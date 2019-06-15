@@ -72,19 +72,17 @@ public class SwaggerConfig {
                         new TokenRequestEndpoint(AUTH_SERVER + "/authorize", CLIENT_ID, CLIENT_ID))
                 .build();
 
-        SecurityScheme oauth = new OAuthBuilder().name("spring_oauth")
+        return new OAuthBuilder().name("spring_oauth")
                 .grantTypes(Arrays.asList(grantType))
                 .scopes(Arrays.asList(scopes()))
                 .build();
-        return oauth;
     }
 
     private AuthorizationScope[] scopes() {
-        AuthorizationScope[] scopes = {
+        return new AuthorizationScope[]{
                 new AuthorizationScope("read", "for read operations"),
                 new AuthorizationScope("write", "for write operations"),
                 new AuthorizationScope("swagger", "Access foo API") };
-        return scopes;
     }
 
     private SecurityContext securityContext() {

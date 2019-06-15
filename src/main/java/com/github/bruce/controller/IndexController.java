@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,7 +53,7 @@ public class IndexController {
     @RequestMapping("/")
     public String welcome() {
         log.info(myBean.getName()); // 3
-        log.info(myBeans.stream().map(b -> b.getName()).collect(toList()).toString()); // [highest, 2, 3, default]
+        log.info(myBeans.stream().map(MyBean::getName).collect(toList()).toString()); // [highest, 2, 3, default]
         return "Welcome to my-spring-boot !";
     }
 
@@ -64,7 +63,7 @@ public class IndexController {
         log.info(redisTemplate.toString());
         reactiveRedisTemplate.opsForValue().set("test", "abc").block();
         String s = stringRedisTemplate.opsForValue().get("storeInfo::2");
-        Optional.ofNullable(s).ifPresent(a -> {
+        Optional.of(s).ifPresent(a -> {
             Book book = JSON.parseObject(a, Book.class);
             log.info("book's name is " + book.getName());
         });
@@ -76,9 +75,9 @@ public class IndexController {
      * receive get param 'a', post json param b, for example:
      * /test/post?a=123
      * post json b: {"x":1, "y":2}
-     * @param a
-     * @param b
-     * @return
+     * @param a a
+     * @param b b
+     * @return c
      */
     @RequestMapping(value = "/test/post", method = RequestMethod.POST)
     public String testPost(String a, @RequestBody Map<String, String> b) {

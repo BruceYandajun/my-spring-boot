@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -17,7 +18,7 @@ public class UserRpcService {
         User user = new User();
         user.setId(new Random().nextInt(10));
         user.setName("user" + user.getId());
-        return Arrays.asList(user);
+        return Collections.singletonList(user);
     }
 
 }

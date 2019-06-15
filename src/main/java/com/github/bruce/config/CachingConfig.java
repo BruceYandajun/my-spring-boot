@@ -15,16 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.io.Serializable;
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,7 +74,7 @@ public class CachingConfig extends CachingConfigurerSupport {
                         .refreshAfterWrite(5, TimeUnit.SECONDS)
                         .build(a -> userRpcService.getAllUsers());
 
-        cacheManager.setCaches(Arrays.asList(new CaffeineCache("allUsers", usersCache)));
+        cacheManager.setCaches(Collections.singletonList(new CaffeineCache("allUsers", usersCache)));
         return cacheManager;
     }
 
@@ -97,15 +94,6 @@ public class CachingConfig extends CachingConfigurerSupport {
                             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())));
         }
         return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(defaultConfig).withInitialCacheConfigurations(particularConfigs).build();
-    }
-
-    @Bean
-    public RedisTemplate<Serializable, Serializable> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Serializable, Serializable> template = new RedisTemplate();
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
     }
 
 }

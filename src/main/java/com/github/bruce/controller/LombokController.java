@@ -12,7 +12,6 @@ public class LombokController {
     @GetMapping("/test")
     public String testLombok() {
         StudentLombok studentLombok = new StudentLombok();
-        studentLombok.getAge();
         studentLombok.show();
         return "success";
     }

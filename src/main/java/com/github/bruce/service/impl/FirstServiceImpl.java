@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirstServiceImpl implements IFirstService {
 
-    private Logger logger = LoggerFactory.getLogger(FirstServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FirstServiceImpl.class);
 
     @Override
     public void service() {

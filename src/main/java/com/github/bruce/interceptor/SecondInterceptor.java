@@ -10,10 +10,7 @@ public class SecondInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         System.out.println("second preHandle");
-        if ("true".equals(request.getParameter("re"))) {
-            return true;
-        }
-        return false;
+        return "true".equals(request.getParameter("re"));
     }
 
     @Override
