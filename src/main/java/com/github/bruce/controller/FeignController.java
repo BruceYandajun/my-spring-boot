@@ -65,6 +65,6 @@ public class FeignController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return 2;
+        return "bookId";
     }
 }
