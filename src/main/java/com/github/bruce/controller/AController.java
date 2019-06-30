@@ -26,4 +26,9 @@ public class AController {
     public Object insert() {
         return aService.insertA();
     }
+
+    @RequestMapping("/findById")
+    public Object findById(Integer id) {
+        return aService.findById(id);
+    }
 }

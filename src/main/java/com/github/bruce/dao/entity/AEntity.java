@@ -1,7 +1,12 @@
 package com.github.bruce.dao.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "a")
 public class AEntity {
     /**
      *
@@ -10,6 +15,7 @@ public class AEntity {
      *
      * @mbg.generated Sun Jun 16 22:27:34 CST 2019
      */
+    @Id
     private Integer id;
 
     /**

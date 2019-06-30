@@ -1,10 +1,13 @@
 package com.github.bruce.service;
 
+import com.github.bruce.dao.ADAO;
 import com.github.bruce.dao.entity.AEntity;
 import com.github.bruce.dao.mapper.AEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class AService {
@@ -13,9 +16,12 @@ public class AService {
     private AEntityMapper entityMapper;
 
     @Autowired
+    private ADAO adao;
+
+    @Autowired
     private BService bService;
 
-//    @Transactional
+    @Transactional
     public AEntity getById(Integer id) {
 //        try {
 //            Thread.sleep(10000);
@@ -29,7 +35,7 @@ public class AService {
         return entityMapper.updateById(id, d);
     }
 
-//    @Transactional
+    @Transactional
     public int insertA() {
         AEntity a = new AEntity();
         a.setC(0);
@@ -41,6 +47,12 @@ public class AService {
         }
         bService.insertC();
         return 1;
+    }
+
+    // 使用JPA，repository来实现
+    public AEntity findById(Integer id) {
+        Optional<AEntity> byId = adao.findById(id);
+        return byId.get();
     }
 
 }
