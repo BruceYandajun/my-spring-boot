@@ -1,8 +1,8 @@
 package com.github.bruce.service;
 
-import com.github.bruce.dao.ADAO;
 import com.github.bruce.dao.entity.AEntity;
 import com.github.bruce.dao.mapper.AEntityMapper;
+import com.github.bruce.dao.repository.ARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ public class AService {
     private AEntityMapper entityMapper;
 
     @Autowired
-    private ADAO adao;
+    private ARepository aRepository;
 
     @Autowired
     private BService bService;
@@ -42,7 +42,7 @@ public class AService {
         entityMapper.insertSelective(a);
         try {
             bService.insertB();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         bService.insertC();
@@ -51,7 +51,7 @@ public class AService {
 
     // 使用JPA，repository来实现
     public AEntity findById(Integer id) {
-        Optional<AEntity> byId = adao.findById(id);
+        Optional<AEntity> byId = aRepository.findById(id);
         return byId.get();
     }
 

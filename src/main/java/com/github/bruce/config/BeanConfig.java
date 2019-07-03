@@ -24,7 +24,6 @@ public class BeanConfig {
     @Bean
     @Order(2)
     public MyBean myBean2() {
-        System.out.println(staticConfig.getTestConfig());
         return new MyBean("2");
     }
 
@@ -32,14 +31,12 @@ public class BeanConfig {
     @Bean
     @Order(3)
     public MyBean myBean3() {
-        System.out.println(staticConfig.getTestConfig());
         return new MyBean("3");
     }
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public MyBean highestBean() {
-        System.out.println(staticConfig.getTestConfig());
         return new MyBean("highest");
     }
 }
