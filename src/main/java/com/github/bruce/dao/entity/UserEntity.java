@@ -2,12 +2,8 @@ package com.github.bruce.dao.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -15,6 +11,7 @@ import java.util.List;
 public class UserEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;
@@ -25,7 +22,8 @@ public class UserEntity {
 
     private String password;
 
-//    private List<String> roles;
+//    @ElementCollection(targetClass = String.class)
+    private String roles;
 
     private Date registerTime;
 
