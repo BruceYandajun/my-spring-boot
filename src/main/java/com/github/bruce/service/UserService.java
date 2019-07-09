@@ -31,6 +31,12 @@ public class UserService {
         return user;
     }
 
+    @Cacheable(value = "userInfo", key = "#id+'_'+#name", cacheManager = "redisCacheManager")
+    public User getUser(Integer id, String name) {
+        log.info("user id : " + id);
+        return new User(id, name);
+    }
+
     @CacheEvict(value = "userInfo", key = "#root.args[0]")
     public void updateUser(Integer id){
         System.out.println(id);
