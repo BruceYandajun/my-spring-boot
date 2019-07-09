@@ -23,4 +23,9 @@ public class BookController {
     public String getStoreById(@RequestParam int storeId) {
         return userService.getStoreById(storeId).getName();
     }
+
+    @GetMapping("/getStudentType")
+    public String getStudentType(@RequestParam int type) {
+        return userService.getStudentType(type).name();
+    }
 }

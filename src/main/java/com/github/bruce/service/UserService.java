@@ -2,6 +2,7 @@ package com.github.bruce.service;
 
 import com.github.bruce.model.Book;
 import com.github.bruce.model.User;
+import com.github.bruce.model.enums.StudentTypeEnum;
 import com.github.bruce.service.rpc.UserRpcService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,4 +54,10 @@ public class UserService {
         return storeService.store(id);
     }
 
+    @Cacheable(value = "studentType", key = "#type", cacheManager = "redisCacheManager")
+    // String cannot be cast to enum (caching error)
+    public StudentTypeEnum getStudentType(Integer type) {
+        log.info("studentType type : " + type);
+        return StudentTypeEnum.GUEST;
+    }
 }
