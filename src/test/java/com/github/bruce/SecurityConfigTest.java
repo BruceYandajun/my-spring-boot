@@ -13,9 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -46,6 +44,6 @@ public class SecurityConfigTest {
         restTemplate = new TestRestTemplate("user", "wrongPassword");
         ResponseEntity<String> response = restTemplate.getForEntity(base.toString(), String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertNull(response.getBody());
+        assertNotNull(response.getBody());
     }
 }
