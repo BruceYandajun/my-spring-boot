@@ -10,7 +10,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -65,5 +68,14 @@ public class UserService {
     public StudentTypeEnum getStudentType(Integer type) {
         log.info("studentType type : " + type);
         return StudentTypeEnum.GUEST;
+    }
+
+    @Cacheable(value = "studentTypeMap", key = "#studentIds+'_'", cacheManager = "redisCacheManager")
+    public Map<String, String> studentTypeMap(String studentIds) {
+        log.info("studentIds : " + studentIds);
+        Map<String, String> map = new HashMap<>();
+        int i = new Random().nextInt(3);
+        map.put(studentIds, StudentTypeEnum.values()[i].name());
+        return map;
     }
 }
