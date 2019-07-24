@@ -78,4 +78,15 @@ public class UserService {
         map.put(studentIds, StudentTypeEnum.values()[i].name());
         return map;
     }
+
+    @Cacheable(value = "studentUsers", keyGenerator = "customKeyGenerator", cacheManager = "redisCacheManager")
+    public Map<String, User> studentUsers(String studentIds) {
+        log.info("studentIds : " + studentIds);
+        User user = new User();
+        user.setId(new Random().nextInt(10));
+        user.setName("Bruce");
+        Map<String, User> map = new HashMap<>();
+        map.put(studentIds, user);
+        return map;
+    }
 }

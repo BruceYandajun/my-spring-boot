@@ -5,7 +5,9 @@ import com.github.bruce.model.Book;
 import com.github.bruce.model.MyBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -41,6 +45,12 @@ public class IndexController {
     @Autowired
     private CacheManager cacheManager;
 
+    @Resource
+    private RedisCacheManager redisCacheManager;
+
+    @Resource
+    private List<CacheManager> managers;
+
     @Autowired
     private ReactiveRedisTemplate reactiveRedisTemplate;
 
@@ -57,8 +67,8 @@ public class IndexController {
         return "Welcome to my-spring-boot !";
     }
 
-    @RequestMapping("/managers")
-    public String managers() {
+    @RequestMapping("/cacheManager")
+    public String cacheManager() {
         log.info(cacheManager.toString());
         log.info(redisTemplate.toString());
         reactiveRedisTemplate.opsForValue().set("test", "abc").block();
@@ -69,6 +79,17 @@ public class IndexController {
         });
         log.info(redisTemplate.hasKey("test").toString());
         return cacheManager.toString();
+    }
+
+    @RequestMapping("/managers")
+    public Object managers() {
+        return managers.stream().map(Object::toString).collect(joining("\n"));
+    }
+
+    @RequestMapping("/removeRedisCache")
+    public Object removeRedisCache(String key) {
+        Optional.ofNullable(redisCacheManager).map(manager -> manager.getCache(key)).ifPresent(Cache::clear);
+        return true;
     }
 
     /**

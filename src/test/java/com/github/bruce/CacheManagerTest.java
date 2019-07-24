@@ -37,4 +37,16 @@ public class CacheManagerTest {
             System.out.println(i + ": " + userCommonService.getStudentType(12308L));
         }
     }
+
+    @Test
+    public void studentUsers() {
+        System.out.println(userCommonService.getStudentUsers("12308,2,50"));
+        System.out.println(userCommonService.getStudentUsers("50,2,12308"));
+    }
+
+    @Test
+    public void getUsers() {
+        System.out.println(userCommonService.getUsers(11L, 0));
+        System.out.println(userCommonService.getUsers(11L, 1));
+    }
 }
