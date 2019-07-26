@@ -3,6 +3,8 @@ package com.github.bruce.service;
 import com.github.bruce.model.User;
 import com.github.bruce.model.enums.StudentTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,19 @@ public class UserCommonService {
 
     @Cacheable(value = "getUsers", key = "#studentId+'_'+#source", cacheManager = "redisCacheManager")
     public List<User> getUsers(Long studentId, Integer source) {
+        log.info("getUsers studentId = {}, source = {}", studentId, source);
+        User user = new User();
+        user.setId(new Random().nextInt(10));
+        return Collections.singletonList(user);
+    }
+
+    @CacheEvict(value = "getUsers", key = "#studentId+'_'+#source", cacheManager = "redisCacheManager")
+    public void removeUsersCache(Long studentId, Integer source) {
+        log.info("removeUsersCache");
+    }
+
+    @CachePut(value = "getUsers", key = "#studentId+'_'+#source", cacheManager = "redisCacheManager")
+    public List<User> putUsersCache(Long studentId, Integer source) {
         User user = new User();
         user.setId(new Random().nextInt(10));
         return Collections.singletonList(user);

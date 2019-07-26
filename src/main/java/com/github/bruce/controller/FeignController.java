@@ -1,7 +1,10 @@
 package com.github.bruce.controller;
 
 import com.github.bruce.model.User;
+import com.github.bruce.model.rpc.ApiResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Random;
 
 @RestController
 public class FeignController {
@@ -17,13 +20,8 @@ public class FeignController {
     }
 
     @GetMapping("/getUserId")
-    public Object getUserId() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return 1;
+    public Object getUserId(@RequestParam("id") Integer id, @RequestParam("name") String name) {
+       return ApiResult.getApiResult(new Random().nextInt(100));
     }
 
     @PostMapping("/updateUser")

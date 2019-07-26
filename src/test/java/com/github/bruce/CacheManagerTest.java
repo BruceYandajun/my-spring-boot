@@ -49,4 +49,25 @@ public class CacheManagerTest {
         System.out.println(userCommonService.getUsers(11L, 0));
         System.out.println(userCommonService.getUsers(11L, 1));
     }
+
+    @Test
+    public void removeUsers() {
+       userCommonService.removeUsersCache(11L, 0);
+    }
+
+    @Test
+    public void putUsers() {
+        userCommonService.putUsersCache(11L, 0);
+    }
+
+    @Test
+    public void clearCache() {
+        cacheManager.getCache("getUsers").clear();
+    }
+
+    @Test
+    public void removeSomeCache() {
+        cacheManager.getCache("getUsers").evict("11_0");
+        cacheManager.getCache("getUsers").evict("11_1");
+    }
 }
