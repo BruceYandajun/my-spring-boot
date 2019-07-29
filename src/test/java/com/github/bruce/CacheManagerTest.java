@@ -6,9 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -18,6 +24,9 @@ public class CacheManagerTest {
 
     @Resource(name = "redisCacheManager")
     private CacheManager cacheManager;
+
+    @Resource
+    private ApplicationContext applicationContext;
 
     @Resource
     private UserService userService;
@@ -67,6 +76,18 @@ public class CacheManagerTest {
 
     @Test
     public void removeSomeCache() {
+        cacheManager.getCache("getUsers").evict("11_0");
+        cacheManager.getCache("getUsers").evict("11_1");
+    }
+
+    @Test
+    public void removeSomeManagerCache() {
+        String cacheManagerName = "redisCacheManager";
+        Map<String, CacheManager> cacheManagerMap = applicationContext.getBeansOfType(CacheManager.class);
+        CacheManager cacheManager = cacheManagerMap.get(cacheManagerName);
+        if (cacheManager == null) {
+            return;
+        }
         cacheManager.getCache("getUsers").evict("11_0");
         cacheManager.getCache("getUsers").evict("11_1");
     }
