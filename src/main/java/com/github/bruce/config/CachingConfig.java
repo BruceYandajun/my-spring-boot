@@ -30,10 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Used local redis cache
- *
- * The steps starting redis-server below:
- * First step : open redis root path '/Users/yandajun/software/develop/redis-4.0.8'
- * Second step : execute bin file 'src/redis-server'
  */
 @Configuration
 @EnableConfigurationProperties(RedisCacheProperties.class)
