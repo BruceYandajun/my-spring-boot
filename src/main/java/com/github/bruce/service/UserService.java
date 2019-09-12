@@ -1,5 +1,6 @@
 package com.github.bruce.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.bruce.model.Book;
 import com.github.bruce.model.User;
 import com.github.bruce.model.enums.StudentTypeEnum;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,12 @@ public class UserService {
     public User getUser(Integer id, String name) {
         log.info("user id : " + id);
         return new User(id, name);
+    }
+
+    @Cacheable(value = "users", key = "#id+'_'+#name", unless = "#result.value.id == 0")
+    public Mono<User> getMonoUser(Integer id, String name) {
+        log.info("user id : " + id + ", name : " + name);
+        return Mono.just(new User(id, name));
     }
 
     @CacheEvict(value = "userInfo", key = "#root.args[0]")
@@ -88,5 +96,9 @@ public class UserService {
         Map<String, User> map = new HashMap<>();
         map.put(studentIds, user);
         return map;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(JSON.toJSONString(Mono.just(new User(1, "a"))));
     }
 }

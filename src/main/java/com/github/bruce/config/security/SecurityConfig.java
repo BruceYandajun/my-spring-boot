@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http.authorizeRequests()
                  .antMatchers("/user/**").hasRole("USER")
                  .antMatchers("/admin/**").hasRole("ADMIN")
-                 .antMatchers("/**").hasRole("GUEST")
+                 .antMatchers("/guest/**").hasRole("GUEST")
                  .and().formLogin();
          http.cors().and().csrf().disable();// Disable cors and csrf attack for permitting post requests
     }

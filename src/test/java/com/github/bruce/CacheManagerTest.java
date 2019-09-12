@@ -1,5 +1,6 @@
 package com.github.bruce;
 
+import com.github.bruce.model.User;
 import com.github.bruce.service.UserCommonService;
 import com.github.bruce.service.UserService;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 
@@ -36,7 +38,9 @@ public class CacheManagerTest {
 
     @Test
     public void redisCacheManager() {
-        userService.getUser(1, "a");
+        userService.getMonoUser(0, "a");
+        Mono<User> monoUser = userService.getMonoUser(0, "a");
+        System.out.println(monoUser.block().getName());
         assertTrue(cacheManager.getCacheNames().size() > 1);
     }
 
