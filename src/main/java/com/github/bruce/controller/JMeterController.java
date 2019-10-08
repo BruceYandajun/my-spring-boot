@@ -1,9 +1,7 @@
 package com.github.bruce.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/JMeter")
@@ -11,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class JMeterController {
 
     @GetMapping("/test")
-    public Object test() {
-        log.info("JMeter testing");
+    public Object test(@RequestParam Integer id,
+                       @RequestHeader(name = "token") String token,
+                       @CookieValue(name = "user") String user) {
+        log.info("JMeter testing id = {}, token = {}, user = {}", id, token, user);
         return "ok";
     }
 
