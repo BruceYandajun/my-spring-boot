@@ -19,4 +19,9 @@ public interface DeliveryConverter {
     DeliveryAddressDto clone(DeliveryAddressDto deliveryAddressDto);
 
     void update(DeliveryAddressDto update, @MappingTarget DeliveryAddressDto delivery);
+
+    @Mappings({
+            @Mapping(ignore = true, source = "name", target = "name")
+    })
+    DeliveryAddressDto convertIgnore(Person person);
 }
