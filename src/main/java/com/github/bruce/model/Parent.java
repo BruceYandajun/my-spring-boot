@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class Parent {
 
-    String name;
+    String s;
     Date start;
     Date end;
 }
