@@ -3,7 +3,6 @@ package com.github.bruce.controller;
 import com.github.bruce.dao.entity.UserEntity;
 import com.github.bruce.model.dto.UserDto;
 import com.github.bruce.service.RegisterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @Controller
 public class RegisterController {
 
-    @Autowired
+    @Resource
     private RegisterService service;
 
     @GetMapping(value = "/registration")
