@@ -64,7 +64,7 @@ public class IndexController {
     public String welcome() {
         log.info(myBean.getName()); // 3
         log.info(myBeans.stream().map(MyBean::getName).collect(toList()).toString()); // [highest, 2, 3, default]
-        return "Welcome to my-spring-boot !\n";
+        return "Welcome to my-spring-boot !!!\n";
     }
 
     @RequestMapping("/cacheManager")
