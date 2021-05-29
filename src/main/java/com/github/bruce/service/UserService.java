@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,9 @@ public class UserService {
 
     @Autowired
     private IStoreService storeService;
+
+    @Resource
+    private RedisTemplate<String, Book> redisTemplate;
 
     @Cacheable(value = "userInfo", key = "#root.args[0]")
     public User getUserById(Integer id) {
@@ -64,6 +69,19 @@ public class UserService {
         Book book = new Book();
         book.setId(id);
         book.setName("book" + book.getId());
+        return book;
+    }
+
+    public Book getBookByIdByRedis(Integer id) {
+        log.info("book id by redis: " + id);
+        Book book = redisTemplate.opsForValue().get("bookInfo:" + id);
+        if (book != null) {
+            return book;
+        }
+        book = new Book();
+        book.setId(id);
+        book.setName("book" + book.getId());
+        redisTemplate.opsForValue().set("bookInfo:" + id, book);
         return book;
     }
 
